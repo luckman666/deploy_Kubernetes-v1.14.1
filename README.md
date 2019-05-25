@@ -41,9 +41,9 @@ setupkernel
 
 # 部署k8s集群具体实现步骤：
 
-git clone https://github.com/luckman666/deploy_Kubernetes-v1.13.1.git
+git clone https://github.com/luckman666/deploy_Kubernetes-v1.14.1.git
 
-cd deploy_Kubernetes-v1.13.1/
+cd deploy_Kubernetes-v1.14.1/
 
 chmod -R 755 .
 
@@ -64,7 +64,7 @@ masterip="192.168.1.107"
 
 K8S版本：
 
-k8s_version="v1.13.1"
+k8s_version="v1.14.1"
 
 服务器root密码
 
