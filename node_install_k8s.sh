@@ -94,7 +94,7 @@ swapoff(){
 
 get_localip(){
 ipaddr='172.0.0.1'
-ipaddr=$(ip addr | awk '/^[0-9]+: / {}; /inet.*global/ {print gensub(/(.*)\/(.*)/, "\\1", "g", $2)}')
+ipaddr=$(ip addr | awk '/^[0-9]+: / {}; /inet.*global/ {print gensub(/(.*)\/(.*)/, "\\1", "g", $2)}' | grep $ip_segment)
 echo "$ipaddr"
 }
 
