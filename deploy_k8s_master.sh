@@ -27,8 +27,10 @@ yum_config(){
   cd /etc/yum.repos.d/ && mkdir bak && mv -f *.repo bak/
   wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
   wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
+  
   yum clean all && yum makecache
   yum -y install iotop iftop yum-utils net-tools git lrzsz expect gcc gcc-c++ make cmake libxml2-devel openssl-devel curl curl-devel unzip sudo ntp libaio-devel wget vim ncurses-devel autoconf automake zlib-devel  python-devel bash-completion
+  ntpdate 0.asia.pool.ntp.org
 }
 #firewalld
 iptables_config(){
