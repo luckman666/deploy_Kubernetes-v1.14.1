@@ -1,10 +1,7 @@
 #!/bin/bash
 #b8_yang@163.com
 source ./base.config
-#masterip=${masterip}
-#hostname=${hostname}
-#k8s_version=${k8s_version}
-#hostip=${hostip}
+bash_path=$(cd "$(dirname "$0")";pwd)
 
 if [[ "$(whoami)" != "root" ]]; then
 	echo "please run this script as root ." >&2
@@ -24,9 +21,6 @@ yum_update(){
 #configure yum source
 yum_config(){
   yum install wget epel-release -y
-  cd /etc/yum.repos.d/ && mkdir bak && mv -f *.repo bak/
-  wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
-  wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
   yum clean all && yum makecache
   yum -y install iotop iftop net-tools git yum-utils lrzsz expect gcc gcc-c++ make cmake libxml2-devel openssl-devel curl curl-devel unzip sudo ntp libaio-devel wget vim ncurses-devel autoconf automake zlib-devel  python-devel bash-completion
   ntpdate 0.asia.pool.ntp.org
@@ -35,11 +29,6 @@ yum_config(){
 iptables_config(){
   systemctl stop firewalld.service
   systemctl disable firewalld.service
-  #yum install iptables-services -y
-  #systemctl enable iptables
-  #systemctl start iptables
-  #iptables -F
-  #service iptables save
   iptables -P FORWARD ACCEPT
 }
 #system config
@@ -62,9 +51,7 @@ EOF
 }
 
 ssh_config(){
-#sed -i "2i #bogeniubi\n#laoniubile" /etc/ssh/ssh_config
-#sed -i "s!#bogeniubi!StrictHostKeyChecking no!g" /etc/ssh/ssh_config
-#sed -i "s!#laoniubile!UserKnownHostsFile /dev/null!g" /etc/ssh/ssh_config
+
 if [`grep 'UserKnownHostsFile' /etc/ssh/ssh_config`];then
 echo "pass"
 else
@@ -107,7 +94,7 @@ setupkernel(){
 
 change_hosts(){
 num=0
-cd /root
+cd $bash_path
 for host in $hostip
 do
 let num+=1
@@ -121,6 +108,7 @@ done
 #ssh trust
 rootssh_trust(){
 rm -rf ~/.ssh
+cd $bash_path
 for host in `cat ./new_hostname_list.config`
 do
 if [ `hostname` != $host ];then
@@ -182,11 +170,13 @@ install_masterk8s(){
 }
 
 install_flannel(){
+	cd $bash_path
 	wget https://raw.githubusercontent.com/coreos/flannel/bc79dd1505b0c8681ece4de4c0d86c5cd2643275/Documentation/kube-flannel.yml
 	kubectl apply -f kube-flannel.yml
 }
 
 join_cluster(){
+
  kubeadm join --token $tocken --discovery-token-ca-cert-hash sha256:$sha_value $masterip:6443
 }
 
