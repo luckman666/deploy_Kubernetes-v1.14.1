@@ -47,10 +47,6 @@ cd deploy_Kubernetes-v1.14.1/
 
 chmod -R 755 .
 
-mv * /root
-
-cd /root
-
 编辑base.config里面的参数
 
 ./deploy_k8s_master.sh
