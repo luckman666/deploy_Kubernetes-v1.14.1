@@ -1,10 +1,8 @@
 #!/bin/bash
 #b8_yang@163.com
 source ./base.config
-#masterip=${masterip}
-#hostname=${hostname}
-#k8s_version=${k8s_version}
-#hostip=${hostip}
+bash_path=$(cd "$(dirname "$0")";pwd)
+
 
 if [[ "$(whoami)" != "root" ]]; then
 	echo "please run this script as root ." >&2
@@ -24,11 +22,6 @@ yum_update(){
 #configure yum source
 yum_config(){
   yum install wget epel-release -y
-  cd /etc/yum.repos.d/ && mkdir bak && mv -f *.repo bak/
-  wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
-  wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
-  
-  yum clean all && yum makecache
   yum -y install iotop iftop yum-utils net-tools git lrzsz expect gcc gcc-c++ make cmake libxml2-devel openssl-devel curl curl-devel unzip sudo ntp libaio-devel wget vim ncurses-devel autoconf automake zlib-devel  python-devel bash-completion
   ntpdate 0.asia.pool.ntp.org
 }
@@ -101,8 +94,8 @@ setupkernel(){
 }
 
 change_hosts(){
+cd $bash_path
 num=0
-cd /root
 rm -rf ./new_hostname_list.config
 touch ./new_hostname_list.config
 for host in $hostip
@@ -121,7 +114,7 @@ done
 
 
 rootssh_trust(){
-
+cd $bash_path
 for host in `cat ./new_hostname_list.config`
 do
 if [ `hostname` != $host ];then
@@ -204,12 +197,12 @@ init_k8s(){
 }
 
 token_shar_value(){
-
+cd $bash_path
 /usr/bin/kubeadm token list > token_shar_value.text
 echo tocken=$(sed -n "2, 1p" token_shar_value.text | awk '{print $1}') >> base.config
 openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //' > token_shar_value.text
 echo "sha_value=$(cat token_shar_value.text)"  >> base.config
-rm -rf token_shar_value.text
+rm -rf ./token_shar_value.text
 
 }
 
