@@ -22,9 +22,7 @@
 
 git clone https://github.com/luckman666/deploy_Kubernetes-v1.14.1.git
 
-cd deploy_Kubernetes-v1.14.1/
-
-chmod -R 755 .
+cd deploy_Kubernetes-v1.14.1 && chmod -R 755 .
 
 编辑base.config里面的参数
 
